@@ -1,16 +1,16 @@
 import json
 import urllib3
 from urllib3.exceptions import HTTPError
-from dotenv import load_dotenv
 import os
 from bank_service import BankService 
 
 class PrivatService(BankService):
     http = urllib3.PoolManager()
-    load_dotenv()
 
     API_URL = 'https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=11'
     BUSINESS_API_URL = 'https://acp.privatbank.ua/api/proxy/currency'
+    
+    token = os.environ['PB_TOKEN']
 
     def get_label(self) -> str:
         return 'PB ' + self.CURRENCY_SIGN[self.currency]
@@ -28,7 +28,7 @@ class PrivatService(BankService):
 
     def _get_business_data(self):
         try:
-            headers = {'token': os.getenv("PB_TOKEN")}
+            headers = {'token': self.token}
             response = self.http.request('GET', self.BUSINESS_API_URL, headers=headers)
             data = json.loads(response.data.decode('utf-8'))
             if 'error' in data:
