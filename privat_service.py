@@ -9,7 +9,6 @@ class PrivatService(BankService):
 
     API_URL = 'https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=11'
     BUSINESS_API_URL = 'https://acp.privatbank.ua/api/proxy/currency'
-    
     token = os.environ['PB_TOKEN']
 
     def get_label(self) -> str:
