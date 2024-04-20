@@ -2,7 +2,6 @@ import json
 import urllib3
 from urllib3.exceptions import HTTPError
 import os
-from bank_service import BankService 
 
 class TelegramService:
     http = urllib3.PoolManager()

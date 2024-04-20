@@ -1,4 +1,5 @@
 import logging
+from decimal import Decimal
 
 class BankService:
     CACHE_LIFETIME = 5 * 60
@@ -10,8 +11,8 @@ class BankService:
     }
 
     def __init__(self, currency='EUR'):
-        self.sell = 0.0
-        self.buy = 0.0
+        self.sell = 0
+        self.buy = 0
         self.error_message = ''
         self.currency = currency
         try:
@@ -31,7 +32,7 @@ class BankService:
         return type(self).__name__ + ' ' + self.CURRENCY_SIGN[self.currency]
 
     def calc_percentage(self):
-        return round(((self.buy - self.sell) / self.buy) * 100, 2)
+        return Decimal(str(round(((self.buy - self.sell) / self.buy) * 100, 2)))
 
     def formatted_values(self):
         percentage = self.calc_percentage()
@@ -41,7 +42,7 @@ class BankService:
     def format_currency(value: float) -> str:
         return "{:.2f}".format(value)
 
-    def render_block(self):
+    def human_response(self):
         if not self.sell or not self.buy:
             return self.get_label() + '  ' + self.error_message
         return self.get_label() + '  ' + self.formatted_values()
