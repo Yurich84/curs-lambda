@@ -11,8 +11,8 @@ class BankService:
     }
 
     def __init__(self, currency='EUR'):
-        self.sell = 0
-        self.buy = 0
+        self._sell = 0
+        self._buy = 0
         self.error_message = ''
         self.currency = currency
         try:
@@ -28,21 +28,26 @@ class BankService:
     def set_buy(self):
         raise NotImplementedError("Subclasses must implement set_buy method.")
 
-    def get_label(self):
+    def get_label(self) -> str:
         return type(self).__name__ + ' ' + self.CURRENCY_SIGN[self.currency]
+    
+    @property
+    def bank_name(self) -> str:
+        return type(self).__name__
 
-    def calc_percentage(self):
+    @property
+    def koeficient(self) -> Decimal:
         return Decimal(str(round(((self.buy - self.sell) / self.buy) * 100, 2)))
 
-    def formatted_values(self):
-        percentage = self.calc_percentage()
+    def formatted_values(self) -> str:
+        percentage = self.get_koeficient()
         return f"{self.format_currency(self.sell)} / {self.format_currency(self.buy)} = {percentage}%"
 
     @staticmethod
     def format_currency(value: float) -> str:
         return "{:.2f}".format(value)
 
-    def human_response(self):
+    def human_response(self) -> str:
         if not self.sell or not self.buy:
             return self.get_label() + '  ' + self.error_message
         return self.get_label() + '  ' + self.formatted_values()

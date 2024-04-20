@@ -2,6 +2,7 @@ import boto3
 from boto3.dynamodb.conditions import Key
 from datetime import datetime, timedelta
 from decimal import Decimal
+from bank_service import BankService 
 
 class DbService:
     def __init__(self):
@@ -10,13 +11,14 @@ class DbService:
 
     time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
 
-    def set_data(self, bank, sell, buy, koeficient):
+    def set_data(self, bank_service: BankService):
         self.table.put_item(Item={
             "time": self.time, 
-            "bank": bank,
-            "sell": Decimal(str(sell)),
-            "buy": Decimal(str(buy)),
-            "koeficient": Decimal(str(koeficient)),
+            "bank": bank_service.bank_name,
+            "currency": bank_service.currency,
+            "sell": bank_service.sell,
+            "buy": bank_service.buy,
+            "koeficient": bank_service.koeficient,
         })
 
     def get_data(self):
