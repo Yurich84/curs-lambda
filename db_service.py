@@ -21,13 +21,13 @@ class DbService:
             "koeficient": bank_service.koeficient,
         })
 
-    def get_data(self):
+    def get_data(self, bank_name: str, currency: str):
         now = datetime.now()
         start_of_month = datetime(now.year, now.month, 1)
         end_of_month = datetime(now.year, now.month + 1, 1) - timedelta(days=1)
 
         response = self.table.scan(
-            FilterExpression=Key('time').gte(start_of_month.strftime("%d-%m-%Y %H:%M:%S"))
+            FilterExpression=Key('time').gte(start_of_month.strftime("%d-%m-%Y %H:%M:%S")) & Key('bank').eq(bank_name) & Key('currency').eq(currency)
         )
 
         return response['Items']

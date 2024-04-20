@@ -17,14 +17,14 @@ def lambda_handler(event, context):
 
     DbService().set_data(privat)
 
-def should_send(day_of_month, privat):
-    if privat.koeficient <= GOOD_PERSENTAGE:
+def should_send(day_of_month, bank_service):
+    if bank_service.koeficient <= GOOD_PERSENTAGE:
         return True
-    items = DbService().get_data()
+    items = DbService().get_data(bank_service.bank_name, bank_service.currency)
     if not items:
         return False
     min_item = min(items, key=lambda x: x["koeficient"])
-    if day_of_month >= DAY_FROM_SEND and privat.koeficient < min_item['koeficient']:
+    if day_of_month >= DAY_FROM_SEND and bank_service.koeficient < min_item['koeficient']:
         return True
 
 if __name__ == '__main__':
