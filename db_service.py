@@ -1,7 +1,7 @@
 import boto3
 from boto3.dynamodb.conditions import Key
 from datetime import datetime, timedelta
-from decimal import Decimal
+import random
 from bank_service import BankService 
 
 class DbService:
@@ -13,7 +13,8 @@ class DbService:
 
     def set_data(self, bank_service: BankService):
         self.table.put_item(Item={
-            "time": self.time, 
+            "id": str(random.randint(1000000, 9999999)),
+            "time": self.time,
             "bank": bank_service.bank_name,
             "currency": bank_service.currency,
             "sell": bank_service.sell,
@@ -36,6 +37,6 @@ class DbService:
         self.dynamodb_client = boto3.client("dynamodb" )
 
     def create_resource(self):
-        table_name ="curs-logs"
+        table_name ="curs"
         self.dynamodb = boto3.resource("dynamodb" )
         self.table = self.dynamodb.Table(table_name)

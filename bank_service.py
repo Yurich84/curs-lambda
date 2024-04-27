@@ -40,8 +40,7 @@ class BankService:
         return Decimal(str(round(((self.buy - self.sell) / self.buy) * 100, 2)))
 
     def formatted_values(self) -> str:
-        percentage = self.get_koeficient()
-        return f"{self.format_currency(self.sell)} / {self.format_currency(self.buy)} = {percentage}%"
+        return f"{self.format_currency(self.sell)} / {self.format_currency(self.buy)} = {self.koeficient}%"
 
     @staticmethod
     def format_currency(value: float) -> str:

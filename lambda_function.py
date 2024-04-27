@@ -8,14 +8,18 @@ DAY_FROM_SEND = 7
 
 def lambda_handler(event, context):
     now = datetime.datetime.now()
-    privat = PrivatService('USD')
 
-    if should_send(now.day, privat):
-        response = TelegramService().send_message(privat.human_response())
-        if(response['ok']):
-            print('Message sent. ' + now.date().strftime('%d.%m.%Y') + ' Curs: ' + privat.human_response())
+    banks = []
 
-    DbService().set_data(privat)
+    banks.append(PrivatService('USD'))
+    banks.append(PrivatService('EUR'))
+
+    for bank in banks:
+        if should_send(now.day, bank):
+            response = TelegramService().send_message(bank.human_response())
+            if(response['ok']):
+                print('Message sent. ' + now.date().strftime('%d.%m.%Y') + ' Curs: ' + bank.human_response())
+        DbService().set_data(bank)
 
 def should_send(day_of_month, bank_service):
     if bank_service.koeficient <= GOOD_PERSENTAGE:
