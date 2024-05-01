@@ -1,5 +1,6 @@
 import datetime
 from privat_service import PrivatService
+from mono_service import MonoService
 from telegram_service import TelegramService
 from db_service import DbService
 
@@ -8,11 +9,10 @@ DAY_FROM_SEND = 7
 
 def lambda_handler(event, context):
     now = datetime.datetime.now()
-
     banks = []
-
     banks.append(PrivatService('USD'))
     banks.append(PrivatService('EUR'))
+    banks.append(MonoService('EUR'))
 
     for bank in banks:
         if should_send(now.day, bank):
