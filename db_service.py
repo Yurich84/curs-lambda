@@ -9,12 +9,13 @@ class DbService:
         self.create_resource()
         # self.create_client()
 
-    time = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
+    time = datetime.now()
 
     def set_data(self, bank_service: BankService):
         self.table.put_item(Item={
             "id": str(random.randint(1000000, 9999999)),
-            "time": self.time,
+            "time": self.time.strftime("%d-%m-%Y %H:%M:%S"),
+            "timestamp": int(self.time.timestamp()),
             "bank": bank_service.bank_name,
             "currency": bank_service.currency,
             "sell": bank_service.sell,
