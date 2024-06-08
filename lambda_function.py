@@ -32,4 +32,6 @@ def should_send(day_of_month, bank_service):
         return True
 
 if __name__ == '__main__':
-    lambda_handler(None, None)
+    data = DbService().get_data('Privat', 'USD')
+    print (data)
+    # lambda_handler(None, None)
