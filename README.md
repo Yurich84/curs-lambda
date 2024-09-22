@@ -1,6 +1,6 @@
 
 ### Run localy
-`python main.py`
+`python lambda_function.py`
 
 ### Deploy
 `rm -f code.zip`

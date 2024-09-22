@@ -20,6 +20,7 @@ def lambda_handler(event, context):
             if(response['ok']):
                 print('Message sent. ' + now.date().strftime('%d.%m.%Y') + ' Curs: ' + bank.human_response())
         DbService().set_data(bank)
+        print(now.date().strftime('%d.%m.%Y') + ' Curs: ' + bank.human_response())
 
 def should_send(day_of_month, bank_service):
     if bank_service.koeficient <= GOOD_PERSENTAGE:

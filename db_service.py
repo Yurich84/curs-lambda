@@ -12,7 +12,7 @@ class DbService:
     time = datetime.now()
 
     def set_data(self, bank_service: BankService):
-        self.table.put_item(Item={
+        item = {
             "id": int(random.randint(1000000, 9999999)),
             "timestamp": int(self.time.timestamp()),
             "time": self.time.strftime("%d-%m-%Y %H:%M:%S"),
@@ -21,14 +21,18 @@ class DbService:
             "sell": bank_service.sell,
             "buy": bank_service.buy,
             "koeficient": bank_service.koeficient,
-        })
+        }
+        self.table.put_item(Item=item)
 
     def get_data(self, bank_name: str, currency: str):
         now = datetime.now()
         start_of_month = int(datetime(now.year, now.month, 1).timestamp())
 
         response = self.table.scan(
-            FilterExpression=Key('timestamp').gte(start_of_month) & Key('bank').eq(bank_name) & Key('currency').eq(currency)
+            FilterExpression=
+            Key('timestamp').gte(start_of_month) & 
+            Key('bank').eq(bank_name) & 
+            Key('currency').eq(currency)
         )
 
         return response['Items']
