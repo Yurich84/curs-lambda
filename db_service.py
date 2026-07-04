@@ -1,6 +1,6 @@
 import boto3
 from boto3.dynamodb.conditions import Key
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 from bank_service import BankService
 
@@ -32,6 +32,18 @@ class DbService:
             FilterExpression=
             Key('timestamp').gte(start_of_month) & 
             Key('bank').eq(bank_name) & 
+            Key('currency').eq(currency)
+        )
+
+        return response['Items']
+
+    def get_data_last_days(self, bank_name: str, currency: str, days: int = 30):
+        start = int((datetime.now() - timedelta(days=days)).timestamp())
+
+        response = self.table.scan(
+            FilterExpression=
+            Key('timestamp').gte(start) &
+            Key('bank').eq(bank_name) &
             Key('currency').eq(currency)
         )
 
