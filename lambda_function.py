@@ -23,22 +23,26 @@ def lambda_handler(event, context):
         print(now.date().strftime('%d.%m.%Y') + ' Curs: ' + bank.human_response())
 
 def should_send(day_of_month, bank_service):
-    if bank_service.koeficient <= GOOD_PERSENTAGE:
+    koeficient = bank_service.koeficient
+    if koeficient <= GOOD_PERSENTAGE:
         return True
 
-    db = DbService()
+    now = datetime.datetime.now()
+    start_of_month = int(datetime.datetime(now.year, now.month, 1).timestamp())
+    thirty_days_ago = int((now - datetime.timedelta(days=30)).timestamp())
 
-    items = db.get_data(bank_service.bank_name, bank_service.currency)
-    if items:
-        min_item = min(items, key=lambda x: x["koeficient"])
-        if day_of_month >= DAY_FROM_SEND and bank_service.koeficient < min_item['koeficient']:
-            return True
+    items = DbService().get_data(
+        bank_service.bank_name, bank_service.currency, min(start_of_month, thirty_days_ago)
+    )
 
-    last_30_days = db.get_data_last_days(bank_service.bank_name, bank_service.currency, 30)
-    if last_30_days:
-        min_30_days = min(last_30_days, key=lambda x: x["koeficient"])
-        if bank_service.koeficient < min_30_days['koeficient']:
-            return True
+    def is_lowest(since):
+        window = [x for x in items if x["timestamp"] >= since]
+        return bool(window) and koeficient < min(x["koeficient"] for x in window)
+
+    if day_of_month >= DAY_FROM_SEND and is_lowest(start_of_month):
+        return True
+    if is_lowest(thirty_days_ago):
+        return True
 
     return False
 
